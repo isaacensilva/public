@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tasky - Sistema de Gerenciamento de Tickets</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <!-- Seção de Login -->
+  <div id="loginSection" class="container">
+    <div class="login-card">
+      <img src="/images/tasky.png" alt="Logo" class="logo">
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="nomeLogin">Nome:</label>
+          <input type="text" id="nomeLogin" placeholder="Digite seu nome" required>
+        </div>
+        <div class="form-group">
+          <label for="senhaLogin">Senha:</label>
+          <input type="password" id="senhaLogin" placeholder="Digite sua senha" required>
+        </div>
+        <button type="submit">Entrar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Conteúdo Principal -->
+  <div id="mainContent" style="display: none;">
+    <!-- Header -->
+    <header>
+      <div class="header-left">
+        <img src="/images/tasky.png" alt="Logo" class="logo">
+      </div>
+      <div class="header-actions">
+        <div class="notification">
+          <i class="fas fa-bell"></i>
+          <span id="notificationCount" class="badge">0</span>
+        </div>
+        <button class="logout-btn">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Sair</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Menu e Conteúdo do Admin -->
+    <div id="adminMenuContainer" style="display: none;">
+      <!-- Menu Lateral -->
+      <nav id="adminMenu" class="admin-menu">
+        <h3 id="adminGreeting" class="admin-greeting">Olá, Administrador!</h3>
+        <ul>
+          <li class="menu-item active" data-section="inicio">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+          </li>
+          <li class="menu-item" data-section="toggleSubmenu">
+            <i class="fas fa-users"></i>
+            <span>Cadastros</span>
+            <i class="fas fa-chevron-down"></i>
+          </li>
+          <ul class="submenu">
+            <li data-section="cadastroColaboradores">
+              <i class="fas fa-user-plus"></i>
+              <span>Novo Colaborador</span>
+            </li>
+            <li data-section="colaboradores">
+              <i class="fas fa-users"></i>
+              <span>Colaboradores</span>
+            </li>
+            <li data-section="setores">
+              <i class="fas fa-building"></i>
+              <span>Setores</span>
+            </li>
+            <li data-section="categorias">
+              <i class="fas fa-tags"></i>
+              <span>Categorias</span>
+            </li>
+          </ul>
+          <li class="menu-item" data-section="relatorios">
+            <i class="fas fa-chart-line"></i>
+            <span>Relatórios</span>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Conteúdo do Admin -->
+      <div id="adminContent">
+        <!-- Seção de Início -->
+        <div id="inicioSection" class="admin-section">
+          <div class="greeting-container">
+            <div class="greeting-content">
+              <i class="fas fa-tachometer-alt"></i>
+              <div>
+                <h2>Olá, Administrador!</h2>
+                <p>Gerencie tickets, colaboradores, setores e acompanhe todas as atualizações do sistema</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="dashboard-grid">
+            <div class="stat-card">
+              <i class="fas fa-ticket-alt"></i>
+              <div class="stat-title">Total de Tickets</div>
+              <div class="stat-number" id="totalTicketsAdmin">0</div>
+            </div>
+            
+            <div class="stat-card">
+              <i class="fas fa-users"></i>
+              <div class="stat-title">Colaboradores</div>
+              <div class="stat-number" id="totalColaboradores">0</div>
+            </div>
+            
+            <div class="stat-card">
+              <i class="fas fa-building"></i>
+              <div class="stat-title">Setores</div>
+              <div class="stat-number" id="totalSetores">0</div>
+            </div>
+            
+            <div class="stat-card">
+              <i class="fas fa-clock"></i>
+              <div class="stat-title">Tickets Pendentes</div>
+              <div class="stat-number" id="ticketsPendentes">0</div>
+            </div>
+          </div>
+
+          <div class="report-section">
+            <h3>
+              <i class="fas fa-history"></i>
+              Últimas Atualizações
+            </h3>
+            <div id="ultimasAtualizacoes" class="update-container">
+              <!-- As atualizações serão inseridas dinamicamente via JavaScript -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção de Cadastro de Colaboradores -->
+        <div id="cadastroColaboradoresSection" class="admin-section">
+          <div class="card">
+            <h2><i class="fas fa-user-plus"></i> Cadastrar Colaborador</h2>
+            <form id="cadastroColaboradorForm">
+              <div class="form-group full-width">
+                <label for="nomeColaborador">Nome:</label>
+                <input type="text" id="nomeColaborador" placeholder="Digite o nome" required>
+              </div>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="setorColaborador">Setor:</label>
+                  <select id="setorColaborador" required></select>
+                </div>
+                <div class="form-group">
+                  <label for="senhaColaborador">Senha:</label>
+                  <input type="password" id="senhaColaborador" placeholder="Digite a senha" required>
+                </div>
+                <div class="form-group">
+                  <label for="isAdminColaborador">Administrador:</label>
+                  <select id="isAdminColaborador">
+                    <option value="0">Não</option>
+                    <option value="1">Sim</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="ativoColaborador">Ativo:</label>
+                  <select id="ativoColaborador">
+                    <option value="1">Sim</option>
+                    <option value="0">Não</option>
+                  </select>
+                </div>
+              </div>
+              <div class="button-group">
+                <button type="submit">Cadastrar</button>
+                <button type="reset">Limpar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Seção de Lista de Colaboradores -->
+        <div id="colaboradoresSection" class="admin-section">
+          <div class="card">
+            <h2><i class="fas fa-users"></i> Lista de Colaboradores</h2>
+            <div class="table-container">
+              <table id="colaboradoresTable">
+                <thead>
+                  <tr>
+                    <th><i class="fas fa-hashtag"></i><span>ID</span></th>
+                    <th><i class="fas fa-ticket-alt"></i><span>Nome</span></th>
+                    <th><i class="fas fa-exclamation-circle"></i><span>Setor</span></th>
+                    <th><i class="fas fa-tag"></i><span>Ativo</span></th>
+                    <th><i class="fas fa-calendar-alt"></i><span>Data de Cadastro</span></th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção de Setores -->
+        <div id="setoresSection" class="admin-section">
+          <div class="card">
+            <h2><i class="fas fa-building"></i> Lista de Setores</h2>
+            <button class="add-btn" onclick="toggleSetorForm()">Adicionar Setor</button>
+            <form id="setorForm" style="display: none;">
+              <div class="form-group">
+                <label for="nomeSetor">Nome do Setor:</label>
+                <input type="text" id="nomeSetor" placeholder="Digite o nome do setor" required>
+              </div>
+              <div class="button-group">
+                <button type="submit">Cadastrar</button>
+                <button type="button" onclick="toggleSetorForm()">Cancelar</button>
+              </div>
+            </form>
+            <div class="table-container">
+              <table id="setoresTable">
+                <thead>
+                  <tr>
+                    <th><i class="fas fa-hashtag"></i><span>ID</span></th>
+                    <th><i class="fas fa-ticket-alt"></i><span>Nome</span></th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção de Categorias -->
+        <div id="categoriasSection" class="admin-section">
+          <div class="card">
+            <h2><i class="fas fa-tags"></i> Lista de Categorias</h2>
+            <button class="add-btn" onclick="toggleCategoriaForm()">Adicionar Categoria</button>
+            <form id="categoriaForm" style="display: none;">
+              <div class="form-group">
+                <label for="nomeCategoria">Nome da Categoria:</label>
+                <input type="text" id="nomeCategoria" placeholder="Digite o nome da categoria" required>
+              </div>
+              <div class="button-group">
+                <button type="submit">Cadastrar</button>
+                <button type="button" onclick="toggleCategoriaForm()">Cancelar</button>
+              </div>
+            </form>
+            <div class="table-container">
+              <table id="categoriasTable">
+                <thead>
+                  <tr>
+                    <th><i class="fas fa-hashtag"></i><span>ID</span></th>
+                    <th><i class="fas fa-ticket-alt"></i><span>Nome</span></th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Seção de Relatórios -->
+        <div id="relatoriosSection" class="admin-section">
+          <div class="card">
+            <div class="report-section">
+              <h3>
+                <i class="fas fa-history"></i>
+                Histórico de Atualizações
+              </h3>
+              <div id="historicoAtualizacoes" class="update-container">
+                <!-- O histórico será inserido dinamicamente via JavaScript -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conteúdo do Usuário -->
+    <div id="userContent">
+      <!-- Menu Lateral do Usuário -->
+      <nav id="userMenu">
+        <div id="userGreeting" class="user-greeting">Olá, Usuário!</div>
+        <ul>
+          <li class="menu-item active" data-section="novoTicket">
+            <i class="fas fa-plus-circle"></i>
+            <span>Novo Ticket</span>
+          </li>
+          <li class="menu-item" data-section="meusTickets">
+            <i class="fas fa-ticket-alt"></i>
+            <span>Meus Tickets</span>
+          </li>
+          <li class="menu-item" data-section="ticketsSetor">
+            <i class="fas fa-building"></i>
+            <span>Tickets do Setor</span>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Conteúdo Principal do Usuário -->
+      <div id="userMainContent">
+        <!-- Seção Novo Ticket -->
+        <div id="novoTicketSection" class="user-section">
+          <div class="welcome-card">
+            <i class="fas fa-plus-circle fa-3x"></i>
+            <h2>Criar Novo Ticket</h2>
+            <p>Preencha os detalhes abaixo para criar um novo ticket de suporte</p>
+          </div>
+          
+          <form id="ticketForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="nome">Assunto:</label>
+                <input type="text" id="nome" placeholder="Digite o assunto do ticket">
+              </div>
+              <div class="form-group">
+                <label for="prioridade">Prioridade:</label>
+                <select id="prioridade">
+                  <option value="baixa">Baixa</option>
+                  <option value="media">Média</option>
+                  <option value="alta">Alta</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="setorDestino">Setor Destino:</label>
+                <select id="setorDestino"></select>
+              </div>
+              <div class="form-group">
+                <label for="usuarioDestino">Usuário Destino:</label>
+                <select id="usuarioDestino"></select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="descricao">Descrição:</label>
+              <textarea id="descricao" placeholder="Descreva o ticket" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+              <label for="conclusao">Data de Conclusão:</label>
+              <input type="datetime-local" id="conclusao">
+            </div>
+            <div class="button-group">
+              <button type="reset" class="btn-secondary">Limpar</button>
+              <button type="submit" class="btn-primary">Enviar</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Seção Meus Tickets -->
+        <div id="meusTicketsSection" class="user-section">
+          <div class="welcome-card">
+            <i class="fas fa-ticket-alt fa-3x"></i>
+            <h2>Meus Tickets</h2>
+            <p>Acompanhe e gerencie todos os seus tickets</p>
+          </div>
+
+          <div class="dashboard-grid">
+            <div class="stat-card">
+              <i class="fas fa-ticket-alt fa-2x"></i>
+              <h3>Total</h3>
+              <p id="totalTickets" class="stat-number">0</p>
+            </div>
+            <div class="stat-card">
+              <i class="fas fa-clock fa-2x"></i>
+              <h3>Pendentes</h3>
+              <p id="pendingTickets" class="stat-number">0</p>
+            </div>
+            <div class="stat-card">
+              <i class="fas fa-sync-alt fa-2x"></i>
+              <h3>Em Andamento</h3>
+              <p id="inProgressTickets" class="stat-number">0</p>
+            </div>
+            <div class="stat-card">
+              <i class="fas fa-check-circle fa-2x"></i>
+              <h3>Resolvidos</h3>
+              <p id="resolvedTickets" class="stat-number">0</p>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table id="ticketsSolicitante">
+              <thead>
+                <tr>
+                  <th><i class="fas fa-hashtag"></i>ID</th>
+                  <th><i class="fas fa-ticket-alt"></i>Assunto</th>
+                  <th><i class="fas fa-exclamation-circle"></i>Prioridade</th>
+                  <th><i class="fas fa-tag"></i>Status</th>
+                  <th><i class="fas fa-calendar-alt"></i>Criação</th>
+                  <th><i class="fas fa-calendar-check"></i>Conclusão</th>
+                  <th><i class="fas fa-cog"></i>Ações</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Seção Tickets do Setor -->
+        <div id="ticketsSetorSection" class="user-section">
+          <div class="welcome-card">
+            <i class="fas fa-building fa-3x"></i>
+            <h2>Tickets do Setor</h2>
+            <p>Visualize e gerencie os tickets do seu setor</p>
+          </div>
+
+          <div class="dashboard-grid">
+            <div class="stat-card">
+              <i class="fas fa-ticket-alt fa-2x"></i>
+              <h3>Total</h3>
+              <p id="totalTicketsSetor" class="stat-number">0</p>
+            </div>
+            <div class="stat-card">
+              <i class="fas fa-clock fa-2x"></i>
+              <h3>Pendentes</h3>
+              <p id="pendingTicketsSetor" class="stat-number">0</p>
+            </div>
+            <div class="stat-card">
+              <i class="fas fa-sync-alt fa-2x"></i>
+              <h3>Em Andamento</h3>
+              <p id="inProgressTicketsSetor" class="stat-number">0</p>
+            </div>
+            <div class="stat-card">
+              <i class="fas fa-check-circle fa-2x"></i>
+              <h3>Resolvidos</h3>
+              <p id="resolvedTicketsSetor" class="stat-number">0</p>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table id="ticketsSetor">
+              <thead>
+                <tr>
+                  <th><i class="fas fa-hashtag"></i>ID</th>
+                  <th><i class="fas fa-ticket-alt"></i>Assunto</th>
+                  <th><i class="fas fa-exclamation-circle"></i>Prioridade</th>
+                  <th><i class="fas fa-tag"></i>Status</th>
+                  <th><i class="fas fa-calendar-alt"></i>Criação</th>
+                  <th><i class="fas fa-calendar-check"></i>Conclusão</th>
+                  <th><i class="fas fa-cog"></i>Ações</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Detalhes do Ticket -->
+  <div id="ticketModal" class="modal">
+    <div class="modal-content">
+      <span class="close">×</span>
+      <div class="ticket-details-container">
+        <div class="ticket-details-header">
+          <h2>Detalhes do Ticket</h2>
+        </div>
+        <div id="ticketDetails" class="ticket-details-grid"></div>
+        <div class="ticket-updates-section">
+          <h3><i class="fas fa-comments"></i> Atualizações</h3>
+          <div id="atualizacoes" class="updates-container"></div>
+          <div class="update-form">
+            <textarea id="novoComentario" placeholder="Escreva um comentário..."></textarea>
+            <button onclick="chamadosSystem.enviarComentario()">
+              <i class="fas fa-paper-plane"></i>
+              Enviar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Notificações -->
+  <div id="notificationModal" class="modal">
+    <div class="modal-content notification-modal">
+      <span class="close-notification">&times;</span>
+      <div class="notification-header">
+        <div class="left-section">
+          <i class="fas fa-bell"></i>
+          <h2>Notificações</h2>
+        </div>
+      </div>
+      <div id="notificationList" class="notification-list">
+        <!-- As notificações serão inseridas aqui dinamicamente -->
+      </div>
+      <div class="notification-footer">
+        <button class="mark-all-read">
+          <i class="fas fa-check-double"></i>
+          Marcar todas como lidas
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Detalhes do Colaborador -->
+  <div id="colaboradorModal" class="modal">
+    <div class="modal-content">
+      <span class="close-colaborador">×</span>
+      <h2>Detalhes do Colaborador</h2>
+      <div id="colaboradorDetails"></div>
+      <div class="button-group">
+        <button onclick="openChangePasswordModal(currentColaboradorId)">Alterar Senha</button>
+        <button id="toggleAtivoBtn" onclick="toggleAtivoColaborador(currentColaboradorId)">Ativar/Desativar</button>
+        <button onclick="excluirColaborador(currentColaboradorId)">Excluir</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Alteração de Senha -->
+  <div id="changePasswordModal" class="modal">
+    <div class="modal-content">
+      <span class="close-password">×</span>
+      <h2>Alterar Senha</h2>
+      <form id="changePasswordForm">
+        <div class="form-group">
+          <label for="novaSenha">Nova Senha:</label>
+          <input type="password" id="novaSenha" placeholder="Digite a nova senha" required>
+        </div>
+        <div class="button-group">
+          <button type="submit">Alterar</button>
+          <button type="button" onclick="closePasswordModal()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/script.js"></script>
+
+  <!-- Alerta Personalizado -->
+  <div id="customAlert" class="custom-alert">
+    <div class="custom-alert-content">
+      <div class="custom-alert-message"></div>
+      <button onclick="closeCustomAlert()">OK</button>
+    </div>
+  </div>
+
+</body>
+</html>
